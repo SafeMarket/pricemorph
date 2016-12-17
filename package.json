@@ -1,0 +1,23 @@
+{
+  "name": "pricemorph",
+  "version": "0.0.0",
+  "description": "Amorphic price tracker and cross-converter",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "amorph-bignumber": "0.0.3",
+    "chai": "^3.5.0",
+    "chai-amorph": "0.0.1",
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "amorph": "^0.1.2"
+  }
+}
