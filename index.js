@@ -1,6 +1,22 @@
 const Amorph = require('amorph')
+const CrossConverter = require('cross-converter')
+const Nobject = require('nobject')
+const NotReadyError = require('./errors/NotReady')
+const DenominatorNotStringError = require('./errors/DenominatorNotString')
+const NumeratorNotStringError = require('./errors/NumeratorNotString')
+const RateNotStringAmorph = require('./errors/RateNotAmorph')
+const PricemorphNotPricemorphError = require('./errors/PricemorphNotPricemorph')
+
+const converters = new Nobject()
+let crossConverter
 
 function Pricemorph(rate, numerator) {
+  if (!(rate instanceof Amorph)) {
+    throw new RateNotStringAmorph()
+  }
+  if (typeof numerator !== 'string') {
+    throw new NumeratorNotStringError()
+  }
   this.rate = rate
   this.numerator = numerator
 }
@@ -8,26 +24,37 @@ function Pricemorph(rate, numerator) {
 Pricemorph.isReady =  false
 
 Pricemorph.loadPricemorph = function loadPricemorph(pricemorph, denominator) {
-  Amorph.loadConverter(`pricemorph.${pricemorph.numerator}.amorph.bignumber`, `pricemorph.${denominator}.amorph.bignumber`, (amorph) => {
-    const rateBignumber = amorph.truth.div(pricemorph.rate.to('bignumber'))
+  if (!(pricemorph instanceof Pricemorph)) {
+    throw new PricemorphNotPricemorphError()
+  }
+  if (typeof denominator !== 'string') {
+    throw new DenominatorNotStringError()
+  }
+  converters.set(pricemorph.numerator, denominator, (amorph) => {
+    const rateBignumber = amorph.to('bignumber').div(pricemorph.rate.to('bignumber'))
     return new Amorph(rateBignumber, 'bignumber')
   })
-  Amorph.loadConverter(`pricemorph.${denominator}.amorph.bignumber`, `pricemorph.${pricemorph.numerator}.amorph.bignumber`, (amorph) => {
+  converters.set(denominator, pricemorph.numerator, (amorph) => {
     const rateBignumber = amorph.truth.times(pricemorph.rate.to('bignumber'))
     return new Amorph(rateBignumber, 'bignumber')
   })
   Pricemorph.isReady = false
 }
 
-Pricemorph.ready = function ready(asset, pricemorph) {
-  Amorph.ready()
+Pricemorph.ready = function ready() {
+  crossConverter = new CrossConverter(converters)
   Pricemorph.isReady = true
 }
 
 Pricemorph.prototype.to = function to(numerator) {
-  const rateAmorphBignumber = new Amorph(this.rate.to('bignumber'), 'bignumber')
-  const rate = new Amorph(rateAmorphBignumber, `pricemorph.${this.numerator}.amorph.bignumber`)
-  return rate.to(`pricemorph.${numerator}.amorph.bignumber`)
+  if (typeof numerator !== 'string') {
+    throw new NumeratorNotStringError()
+  }
+  if (Pricemorph.isReady !== true) {
+    throw new NotReadyError()
+  }
+  const rateAmorph = new Amorph(this.rate.to('bignumber'), 'bignumber')
+  return crossConverter.convert(rateAmorph, this.numerator, numerator)
 }
 
 module.exports = Pricemorph
