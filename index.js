@@ -8,6 +8,7 @@ const RateNotStringAmorph = require('./errors/RateNotAmorph')
 const PricemorphNotPricemorphError = require('./errors/PricemorphNotPricemorph')
 
 const converters = new Nobject()
+const forms = []
 let crossConverter
 
 function Pricemorph(rate, numerator) {
@@ -22,6 +23,7 @@ function Pricemorph(rate, numerator) {
 }
 
 Pricemorph.isReady =  false
+Pricemorph.forms = forms
 
 Pricemorph.loadPricemorph = function loadPricemorph(pricemorph, denominator) {
   if (!(pricemorph instanceof Pricemorph)) {
@@ -38,6 +40,12 @@ Pricemorph.loadPricemorph = function loadPricemorph(pricemorph, denominator) {
     const rateBignumber = amorph.truth.times(pricemorph.rate.to('bignumber'))
     return new Amorph(rateBignumber, 'bignumber')
   })
+  if (forms.indexOf(pricemorph.numerator) === -1) {
+    forms.push(pricemorph.numerator)
+  }
+  if (forms.indexOf(denominator) === -1) {
+    forms.push(denominator)
+  }
   Pricemorph.isReady = false
 }
 

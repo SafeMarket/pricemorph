@@ -101,4 +101,8 @@ describe('Pricemorph', () => {
     productPricemorph.to('USC').should.amorphTo('number').equal(50)
   })
 
+  it('should have forms', () => {
+    Pricemorph.forms.should.deep.equal(['BTC', 'USD', 'USC', 'EUR'])
+  })
+
 })
