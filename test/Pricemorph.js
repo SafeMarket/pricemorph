@@ -36,7 +36,10 @@ describe('Pricemorph', () => {
   it('should instantiate', () => {
     BTCPricemorphBTC = new Pricemorph(new Amorph(1, 'number'), 'BTC')
     BTCPricemorphUSD = new Pricemorph(new Amorph(100, 'number'), 'USD')
+    //USC = US Cents
     BTCPricemorphUSC = new Pricemorph(new Amorph(100*100, 'number'), 'USC')
+    //USN = US Nickels
+    BTCPricemorphUSN = new Pricemorph(new Amorph(100*20, 'number'), 'USN')
     BTCPricemorphEUR = new Pricemorph(new Amorph(200, 'number'), 'EUR')
   })
 
@@ -52,7 +55,7 @@ describe('Pricemorph', () => {
     }).should.throw(NumeratorNotStringError)
   })
 
-  it('should not be ready', () => {
+  it('should not be ready ', () => {
     Pricemorph.isReady.should.equal(false)
   })
 
@@ -79,7 +82,7 @@ describe('Pricemorph', () => {
     Pricemorph.isReady.should.equal(false)
   })
 
-  it ('should ready', () => {
+  it ('should ready (sync)', () => {
     Pricemorph.ready()
   })
 
@@ -103,6 +106,46 @@ describe('Pricemorph', () => {
 
   it('should have forms', () => {
     Pricemorph.forms.should.deep.equal(['BTC', 'USD', 'USC', 'EUR'])
+  })
+
+  it('should load USN', () => {
+    Pricemorph.loadPricemorph(BTCPricemorphUSN, 'BTC')
+  })
+
+  it('should be NOT be ready', () => {
+    Pricemorph.isReady.should.equal(false)
+  })
+
+  it('should ready (async)', () => {
+    Pricemorph.ready({ isAsync: true, chunkSize: 1 })
+  })
+
+  it('should still NOT be ready', () => {
+    Pricemorph.isReady.should.equal(false)
+  })
+
+  it('should wait for Pricemorph.promise', () => {
+    return Pricemorph.promise
+  })
+
+  it('should be ready', () => {
+    Pricemorph.isReady.should.equal(true)
+  })
+
+  it('should simple convert', () => {
+    const productPricemorph = new Pricemorph(new Amorph(2, 'number'), 'BTC')
+    productPricemorph.to('BTC').should.amorphTo('number').equal(2)
+    productPricemorph.to('USD').should.amorphTo('number').equal(100 * 2)
+    productPricemorph.to('USC').should.amorphTo('number').equal(100 * 2 * 100)
+    productPricemorph.to('USN').should.amorphTo('number').equal(100 * 2 * 20)
+    productPricemorph.to('EUR').should.amorphTo('number').equal(200 * 2)
+  })
+
+  it('should cross convert', () => {
+    const productPricemorph = new Pricemorph(new Amorph(1, 'number'), 'EUR')
+    productPricemorph.to('USD').should.amorphTo('number').equal(.5)
+    productPricemorph.to('USC').should.amorphTo('number').equal(50)
+    productPricemorph.to('USN').should.amorphTo('number').equal(10)
   })
 
 })

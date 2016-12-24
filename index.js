@@ -6,6 +6,7 @@ const DenominatorNotStringError = require('./errors/DenominatorNotString')
 const NumeratorNotStringError = require('./errors/NumeratorNotString')
 const RateNotStringAmorph = require('./errors/RateNotAmorph')
 const PricemorphNotPricemorphError = require('./errors/PricemorphNotPricemorph')
+const Q = require('q')
 
 const converters = new Nobject()
 const forms = []
@@ -49,9 +50,16 @@ Pricemorph.loadPricemorph = function loadPricemorph(pricemorph, denominator) {
   Pricemorph.isReady = false
 }
 
-Pricemorph.ready = function ready() {
-  crossConverter = new CrossConverter(converters)
-  Pricemorph.isReady = true
+Pricemorph.ready = function ready(crossConverterOptions) {
+  crossConverter = new CrossConverter(converters, crossConverterOptions)
+  if (crossConverter.isReady) {
+    Pricemorph.promise = Q.resolve(true)
+    Pricemorph.isReady = true
+  } else {
+    Pricemorph.promise = crossConverter.promise.then(() => {
+      Pricemorph.isReady = true
+    })
+  }
 }
 
 Pricemorph.prototype.to = function to(numerator) {
