@@ -10,7 +10,6 @@ const Q = require('q')
 
 const converters = new Nobject()
 const forms = []
-let crossConverter
 
 function Pricemorph(rate, numerator) {
   if (!(rate instanceof Amorph)) {
@@ -24,6 +23,7 @@ function Pricemorph(rate, numerator) {
 }
 
 Pricemorph.isReady =  false
+Pricemorph.converters = converters
 Pricemorph.forms = forms
 
 Pricemorph.loadPricemorph = function loadPricemorph(pricemorph, denominator) {
@@ -51,12 +51,12 @@ Pricemorph.loadPricemorph = function loadPricemorph(pricemorph, denominator) {
 }
 
 Pricemorph.ready = function ready(crossConverterOptions) {
-  crossConverter = new CrossConverter(converters, crossConverterOptions)
-  if (crossConverter.isReady) {
+  Pricemorph.crossConverter = new CrossConverter(converters, crossConverterOptions)
+  if (Pricemorph.crossConverter.isReady) {
     Pricemorph.promise = Q.resolve(true)
     Pricemorph.isReady = true
   } else {
-    Pricemorph.promise = crossConverter.promise.then(() => {
+    Pricemorph.promise = Pricemorph.crossConverter.promise.then(() => {
       Pricemorph.isReady = true
     })
   }
@@ -70,9 +70,7 @@ Pricemorph.prototype.to = function to(numerator) {
     throw new NotReadyError()
   }
   const rateAmorph = new Amorph(this.rate.to('bignumber'), 'bignumber')
-  return crossConverter.convert(rateAmorph, this.numerator, numerator)
+  return Pricemorph.crossConverter.convert(rateAmorph, this.numerator, numerator)
 }
-
-Pricemorph.crossConverter = crossConverter
 
 module.exports = Pricemorph
