@@ -73,4 +73,6 @@ Pricemorph.prototype.to = function to(numerator) {
   return crossConverter.convert(rateAmorph, this.numerator, numerator)
 }
 
+Pricemorph.crossConverter = crossConverter
+
 module.exports = Pricemorph
