@@ -1,6 +1,6 @@
 {
   "name": "pricemorph",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Amorphic price tracker and cross-converter",
   "main": "index.js",
   "directories": {
