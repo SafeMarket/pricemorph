@@ -19,7 +19,7 @@
   },
   "dependencies": {
     "amorph": "^0.2.0",
-    "cross-converter": "0.0.4",
+    "cross-converter": "0.0.5",
     "q": "^1.4.1",
     "testable-error": "0.0.3"
   }
