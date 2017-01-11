@@ -43,6 +43,10 @@ describe('Pricemorph', () => {
     BTCPricemorphEUR = new Pricemorph(new Amorph(200, 'number'), 'EUR')
   })
 
+  it('should not be ready ', () => {
+    Pricemorph.isReady.should.equal(false)
+  })
+
   it('pricemorph.to(USD) should throw NotReadyError', () => {
     (() => {
       BTCPricemorphBTC.to('USD')
@@ -53,10 +57,6 @@ describe('Pricemorph', () => {
     (() => {
       BTCPricemorphBTC.to({})
     }).should.throw(NumeratorNotStringError)
-  })
-
-  it('should not be ready ', () => {
-    Pricemorph.isReady.should.equal(false)
   })
 
   it('pricemorph.loadPricemorph({}, BTC) should throw PricemorphNotPricemorphError', () => {
@@ -80,6 +80,16 @@ describe('Pricemorph', () => {
 
   it('should not be ready', () => {
     Pricemorph.isReady.should.equal(false)
+  })
+
+  it('should be able to convert a pricemorph to its own numerator (even though not ready)', () => {
+    const tenBTC = new Pricemorph(new Amorph(10, 'number'), 'BTC')
+    tenBTC.to('BTC').to('number').should.equal(10)
+  })
+
+  it('should be able to convert a zero pricemorph(even though not ready)', () => {
+    const zeroBTC = new Pricemorph(new Amorph(0, 'number'), 'BTC')
+    zeroBTC.to('USD').to('number').should.equal(0)
   })
 
   it ('should ready (sync)', () => {

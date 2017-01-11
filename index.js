@@ -66,6 +66,12 @@ Pricemorph.prototype.to = function to(numerator) {
   if (typeof numerator !== 'string') {
     throw new NumeratorNotStringError()
   }
+  if (this.rate.to('bignumber').equals(0)) {
+    return new Amorph(0, 'number');
+  }
+  if (this.numerator === numerator) {
+    return new Amorph(this.rate.to('bignumber'), 'bignumber');
+  }
   if (Pricemorph.isReady !== true) {
     throw new NotReadyError()
   }
