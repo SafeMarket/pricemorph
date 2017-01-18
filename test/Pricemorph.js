@@ -2,7 +2,7 @@ const Amorph = require('amorph')
 const Pricemorph = require('../')
 const chai = require('chai')
 const chaiAmorph = require('chai-amorph')
-const bignumberConverters = require('amorph-bignumber')
+const bignumberPlugin = require('amorph-bignumber')
 const NotReadyError = require('../errors/NotReady')
 const DenominatorNotStringError = require('../errors/DenominatorNotString')
 const NumeratorNotStringError = require('../errors/NumeratorNotString')
@@ -12,7 +12,7 @@ const PricemorphNotPricemorphError = require('../errors/PricemorphNotPricemorph'
 chai.use(chaiAmorph)
 chai.should()
 
-Amorph.loadConverters(bignumberConverters)
+Amorph.loadPlugin(bignumberPlugin)
 Amorph.ready()
 
 const expect = chai.expect
