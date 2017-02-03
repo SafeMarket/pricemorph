@@ -36,11 +36,11 @@ Pricemorph.loadPricemorph = function loadPricemorph(pricemorph, denominator) {
   }
   converters.set(pricemorph.numerator, denominator, (amorph) => {
     const rateBignumber = amorph.to('bignumber').div(pricemorph.rate.to('bignumber'))
-    return new Amorph(rateBignumber, 'bignumber')
+    return new Pricemorph.Amorph(rateBignumber, 'bignumber')
   })
   converters.set(denominator, pricemorph.numerator, (amorph) => {
     const rateBignumber = amorph.truth.times(pricemorph.rate.to('bignumber'))
-    return new Amorph(rateBignumber, 'bignumber')
+    return new Pricemorph.Amorph(rateBignumber, 'bignumber')
   })
   if (forms.indexOf(pricemorph.numerator) === -1) {
     forms.push(pricemorph.numerator)
@@ -68,15 +68,15 @@ Pricemorph.prototype.to = function to(numerator) {
     throw new NumeratorNotStringError()
   }
   if (this.rate.to('bignumber').equals(0)) {
-    return new Amorph(0, 'number');
+    return new Pricemorph.Amorph(0, 'number');
   }
   if (this.numerator === numerator) {
-    return new Amorph(this.rate.to('bignumber'), 'bignumber');
+    return new Pricemorph.Amorph(this.rate.to('bignumber'), 'bignumber');
   }
   if (Pricemorph.isReady !== true) {
     throw new NotReadyError()
   }
-  const rateAmorph = new Amorph(this.rate.to('bignumber'), 'bignumber')
+  const rateAmorph = new Pricemorph.Amorph(this.rate.to('bignumber'), 'bignumber')
   return Pricemorph.crossConverter.convert(rateAmorph, this.numerator, numerator)
 }
 
