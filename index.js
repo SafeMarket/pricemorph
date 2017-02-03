@@ -12,7 +12,7 @@ const converters = new Nobject()
 const forms = []
 
 function Pricemorph(rate, numerator) {
-  if (!(rate instanceof Amorph)) {
+  if (!(rate instanceof Pricemorph.Amorph)) {
     throw new RateNotStringAmorph()
   }
   if (typeof numerator !== 'string') {
@@ -22,6 +22,7 @@ function Pricemorph(rate, numerator) {
   this.numerator = numerator
 }
 
+Pricemorph.Amorph = Amorph
 Pricemorph.isReady =  false
 Pricemorph.converters = converters
 Pricemorph.forms = forms
