@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "amorph": "^1.0.0",
+    "arguguard": "^2.0.1",
     "cross-converter": "0.0.5",
     "q": "^1.4.1",
     "testable-error": "0.0.3"

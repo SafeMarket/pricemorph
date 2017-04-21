@@ -4,10 +4,6 @@ const chai = require('chai')
 const chaiAmorph = require('chai-amorph')
 const bignumberPlugin = require('amorph-bignumber')
 const NotReadyError = require('../errors/NotReady')
-const DenominatorNotStringError = require('../errors/DenominatorNotString')
-const NumeratorNotStringError = require('../errors/NumeratorNotString')
-const RateNotAmorphError = require('../errors/RateNotAmorph')
-const PricemorphNotPricemorphError = require('../errors/PricemorphNotPricemorph')
 
 chai.use(chaiAmorph)
 chai.should()
@@ -21,16 +17,16 @@ describe('Pricemorph', () => {
 
   let BTCPricemorphBTC
 
-  it('new Pricemorph({}, BTC) should throw PricemorphNotPricemorphError', () => {
+  it('new Pricemorph({}, BTC) should throw Error', () => {
     (() => {
       new Pricemorph({}, 'BTC')
-    }).should.throw(RateNotAmorphError)
+    }).should.throw(Error)
   })
 
-  it('new Pricemorph(amorph, {}) should throw NumeratorNotStringError', () => {
+  it('new Pricemorph(amorph, {}) should throw Error', () => {
     (() => {
       new Pricemorph(new Amorph(1, 'number'), {})
-    }).should.throw(NumeratorNotStringError)
+    }).should.throw(Error)
   })
 
   it('should instantiate', () => {
@@ -53,22 +49,22 @@ describe('Pricemorph', () => {
     }).should.throw(NotReadyError)
   })
 
-  it('pricemorph.to({}) should throw NumeratorNotStringError', () => {
+  it('pricemorph.to({}) should throw Error', () => {
     (() => {
       BTCPricemorphBTC.to({})
-    }).should.throw(NumeratorNotStringError)
+    }).should.throw(Error)
   })
 
-  it('pricemorph.loadPricemorph({}, BTC) should throw PricemorphNotPricemorphError', () => {
+  it('pricemorph.loadPricemorph({}, BTC) should throw Error', () => {
     (() => {
       Pricemorph.loadPricemorph({}, 'BTC')
-    }).should.throw(PricemorphNotPricemorphError)
+    }).should.throw(Error)
   })
 
-  it('pricemorph.loadPricemorph(pricemoprh, {}) should throw DenominatorNotStringError', () => {
+  it('pricemorph.loadPricemorph(pricemoprh, {}) should throw Error', () => {
     (() => {
       Pricemorph.loadPricemorph(BTCPricemorphBTC, {})
-    }).should.throw(DenominatorNotStringError)
+    }).should.throw(Error)
   })
 
   it('should load pricemorphs', () => {
@@ -90,6 +86,12 @@ describe('Pricemorph', () => {
   it('should be able to convert a zero pricemorph(even though not ready)', () => {
     const zeroBTC = new Pricemorph(new Amorph(0, 'number'), 'BTC')
     zeroBTC.to('USD').to('number').should.equal(0)
+  })
+
+  it ('should throw error when trying to ready with options as number', () => {
+    (() => {
+      Pricemorph.ready(5)
+    }).should.throw(Error)
   })
 
   it ('should ready (sync)', () => {

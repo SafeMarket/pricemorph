@@ -2,22 +2,20 @@ const Amorph = require('amorph')
 const CrossConverter = require('cross-converter')
 const Nobject = require('nobject')
 const NotReadyError = require('./errors/NotReady')
-const DenominatorNotStringError = require('./errors/DenominatorNotString')
-const NumeratorNotStringError = require('./errors/NumeratorNotString')
-const RateNotStringAmorph = require('./errors/RateNotAmorph')
-const PricemorphNotPricemorphError = require('./errors/PricemorphNotPricemorph')
 const Q = require('q')
+const arguguard = require('arguguard')
+const Validator = require('arguguard/lib/Validator')
 
 const converters = new Nobject()
 const forms = []
+const optionsValidator = new Validator('Options', (options) => {
+  if (options !== undefined && !(options instanceof Object)) {
+    throw new Error('should be either undefined or instance of Object')
+  }
+})
 
 function Pricemorph(rate, numerator) {
-  if (!(rate instanceof Pricemorph.Amorph)) {
-    throw new RateNotStringAmorph()
-  }
-  if (typeof numerator !== 'string') {
-    throw new NumeratorNotStringError()
-  }
+  arguguard('Pricemorph', ['Amorph', 'string'], arguments)
   this.rate = rate
   this.numerator = numerator
 }
@@ -28,12 +26,7 @@ Pricemorph.converters = converters
 Pricemorph.forms = forms
 
 Pricemorph.loadPricemorph = function loadPricemorph(pricemorph, denominator) {
-  if (!(pricemorph instanceof Pricemorph)) {
-    throw new PricemorphNotPricemorphError()
-  }
-  if (typeof denominator !== 'string') {
-    throw new DenominatorNotStringError()
-  }
+  arguguard('Pricemorph.loadPricemorph', ['Pricemorph', 'string'], arguments)
   converters.set(pricemorph.numerator, denominator, (amorph) => {
     const rateBignumber = amorph.to('bignumber').div(pricemorph.rate.to('bignumber'))
     return new Pricemorph.Amorph(rateBignumber, 'bignumber')
@@ -52,6 +45,7 @@ Pricemorph.loadPricemorph = function loadPricemorph(pricemorph, denominator) {
 }
 
 Pricemorph.ready = function ready(crossConverterOptions) {
+  arguguard('Pricemorph.loadPricemorph', [optionsValidator], arguments)
   Pricemorph.crossConverter = new CrossConverter(converters, crossConverterOptions)
   if (Pricemorph.crossConverter.isReady) {
     Pricemorph.promise = Q.resolve(true)
@@ -64,9 +58,7 @@ Pricemorph.ready = function ready(crossConverterOptions) {
 }
 
 Pricemorph.prototype.to = function to(numerator) {
-  if (typeof numerator !== 'string') {
-    throw new NumeratorNotStringError()
-  }
+  arguguard('pricemorph.to', ['string'], arguments)
   if (this.rate.to('bignumber').equals(0)) {
     return new Pricemorph.Amorph(0, 'number');
   }
@@ -74,7 +66,7 @@ Pricemorph.prototype.to = function to(numerator) {
     return new Pricemorph.Amorph(this.rate.to('bignumber'), 'bignumber');
   }
   if (Pricemorph.isReady !== true) {
-    throw new NotReadyError()
+    throw new NotReadyError('Amorph is not ready')
   }
   const rateAmorph = new Pricemorph.Amorph(this.rate.to('bignumber'), 'bignumber')
   return Pricemorph.crossConverter.convert(rateAmorph, this.numerator, numerator)
