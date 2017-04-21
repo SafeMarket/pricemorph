@@ -18,7 +18,7 @@
     "mocha": "^3.2.0"
   },
   "dependencies": {
-    "amorph": "^1.0.0",
+    "amorph": "^1.1.1",
     "arguguard": "^2.0.1",
     "cross-converter": "0.0.5",
     "q": "^1.4.1",

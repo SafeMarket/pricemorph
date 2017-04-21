@@ -160,4 +160,28 @@ describe('Pricemorph', () => {
     productPricemorph.to('USN').should.amorphTo('number').equal(10)
   })
 
+  it('should add', () => {
+    const pricemorph1 = new Pricemorph(new Amorph(1, 'number'), 'USD')
+    const pricemorph2 = new Pricemorph(new Amorph(1, 'number'), 'EUR')
+    pricemorph1.plus(pricemorph2).to('USD').should.amorphTo('number').equal(1.5)
+  })
+
+  it('should minus', () => {
+    const pricemorph1 = new Pricemorph(new Amorph(1, 'number'), 'USD')
+    const pricemorph2 = new Pricemorph(new Amorph(1, 'number'), 'EUR')
+    pricemorph1.minus(pricemorph2).to('USD').should.amorphTo('number').equal(.5)
+  })
+
+  it('should times', () => {
+    const pricemorph1 = new Pricemorph(new Amorph(1, 'number'), 'USD')
+    const multiplier = new Amorph(2, 'number')
+    pricemorph1.times(multiplier).to('USD').should.amorphTo('number').equal(2)
+  })
+
+  it('should div', () => {
+    const pricemorph1 = new Pricemorph(new Amorph(1, 'number'), 'USD')
+    const multiplier = new Amorph(2, 'number')
+    pricemorph1.div(multiplier).to('USD').should.amorphTo('number').equal(.5)
+  })
+
 })

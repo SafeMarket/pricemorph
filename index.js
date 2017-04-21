@@ -72,4 +72,36 @@ Pricemorph.prototype.to = function to(numerator) {
   return Pricemorph.crossConverter.convert(rateAmorph, this.numerator, numerator)
 }
 
+Pricemorph.prototype.plus = function plus(pricemorph) {
+  arguguard('pricemorph.plus', ['Pricemorph'], arguments)
+  const price = this.rate.as('bignumber', (bignumber) => {
+    return bignumber.plus(pricemorph.to(this.numerator).to('bignumber'))
+  })
+  return new Pricemorph(price, this.numerator)
+}
+
+Pricemorph.prototype.minus = function minus(pricemorph) {
+  arguguard('pricemorph.minus', ['Pricemorph'], arguments)
+  const price = this.rate.as('bignumber', (bignumber) => {
+    return bignumber.minus(pricemorph.to(this.numerator).to('bignumber'))
+  })
+  return new Pricemorph(price, this.numerator)
+}
+
+Pricemorph.prototype.times = function times(multiplier) {
+  arguguard('pricemorph.times', ['Amorph'], arguments)
+  const price = this.rate.as('bignumber', (bignumber) => {
+    return bignumber.times(multiplier.to('bignumber'))
+  })
+  return new Pricemorph(price, this.numerator)
+}
+
+Pricemorph.prototype.div = function div(multiplier) {
+  arguguard('pricemorph.div', ['Amorph'], arguments)
+  const price = this.rate.as('bignumber', (bignumber) => {
+    return bignumber.div(multiplier.to('bignumber'))
+  })
+  return new Pricemorph(price, this.numerator)
+}
+
 module.exports = Pricemorph
