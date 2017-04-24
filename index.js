@@ -104,4 +104,9 @@ Pricemorph.prototype.div = function div(multiplier) {
   return new Pricemorph(price, this.numerator)
 }
 
+Pricemorph.prototype.toLabel = function toLabel(numerator, fixed) {
+  arguguard('pricemorph.toLabel', ['string', 'number'], arguments)
+  return `${this.to(numerator).to('bignumber').toFixed(fixed)} ${numerator}`
+}
+
 module.exports = Pricemorph

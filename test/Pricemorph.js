@@ -184,4 +184,17 @@ describe('Pricemorph', () => {
     pricemorph1.div(multiplier).to('USD').should.amorphTo('number').equal(.5)
   })
 
+  it('should toLabel', () => {
+    const pricemorph1 = new Pricemorph(new Amorph(1, 'number'), 'USD')
+    pricemorph1.toLabel('USD', 0).should.equal('1 USD')
+    pricemorph1.toLabel('EUR', 0).should.equal('2 EUR')
+    pricemorph1.toLabel('USD', 2).should.equal('1.00 USD')
+    pricemorph1.toLabel('EUR', 2).should.equal('2.00 EUR')
+    const pricemorph2 = new Pricemorph(new Amorph(1, 'number'), 'EUR')
+    pricemorph2.toLabel('USD', 0).should.equal('1 USD')
+    pricemorph2.toLabel('EUR', 0).should.equal('1 EUR')
+    pricemorph2.toLabel('USD', 2).should.equal('0.50 USD')
+    pricemorph2.toLabel('EUR', 2).should.equal('1.00 EUR')
+  })
+
 })
