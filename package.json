@@ -7,22 +7,20 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --bail"
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "amorph": "^2.0.0",
     "amorph-bignumber": "^1.0.0",
     "chai": "^3.5.0",
     "chai-amorph": "0.0.1",
     "mocha": "^3.2.0"
   },
   "dependencies": {
-    "amorph": "^1.3.1",
     "arguguard": "^2.0.1",
-    "cross-converter": "^0.0.5",
-    "nobject": "^0.1.0",
-    "q": "^1.4.1",
+    "cross-converter": "^3.0.2",
     "testable-error": "^0.0.3"
   }
 }
